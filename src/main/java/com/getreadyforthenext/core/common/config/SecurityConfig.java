@@ -1,7 +1,6 @@
-package com.getreadyforthenext.core.config;
+package com.getreadyforthenext.core.common.config;
 
-import com.getreadyforthenext.core.enums.Role;
-import com.getreadyforthenext.core.security.JwtTokenFilter;
+import com.getreadyforthenext.core.user.enums.Role;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,11 +12,8 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
 
@@ -25,15 +21,12 @@ import java.io.IOException;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final JwtTokenFilter jwtTokenFilter;
     @Value("${oauth.successUrl}")
     String successUrl;
+
     @Value("${oauth.failureUrl}")
     String failureUrl;
 
-    public SecurityConfig(JwtTokenFilter jwtTokenFilter) {
-        this.jwtTokenFilter = jwtTokenFilter;
-    }
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -57,8 +50,6 @@ public class SecurityConfig {
             authorizeHttpRequests.anyRequest().authenticated();
         });
 
-        httpSecurity.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
-
         return httpSecurity.build();
     }
 
@@ -73,10 +64,5 @@ public class SecurityConfig {
 
     private void failureHandler(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
         response.sendRedirect(this.failureUrl);
-    }
-
-    @Bean
-    public PasswordEncoder PasswordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 }

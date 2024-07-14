@@ -1,6 +1,6 @@
-package com.getreadyforthenext.core.repository;
+package com.getreadyforthenext.core.user.repositories;
 
-import com.getreadyforthenext.core.model.User;
+import com.getreadyforthenext.core.user.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
