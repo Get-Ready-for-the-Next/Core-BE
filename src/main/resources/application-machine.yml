@@ -1,0 +1,44 @@
+spring:
+  config:
+    import: optional:file:env/.env.machine[.properties]
+
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    driver-class-name: ${DATABASE_DRIVER}
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+  jackson:
+    time-zone: UTC
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_OAUTH_CLIENT_ID}
+            client-secret: ${GOOGLE_OAUTH_CLIENT_SECRET}
+            scope:
+              - email
+              - profile
+server:
+  port: ${PORT}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - info
+
+oauth:
+  successUrl: http://localhost:3000/oauth2/success
+  failureUrl: http://localhost:3000/oauth2/failure
