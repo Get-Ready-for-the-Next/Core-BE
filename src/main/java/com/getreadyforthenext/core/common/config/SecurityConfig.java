@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -20,15 +19,11 @@ public class SecurityConfig {
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
         httpSecurity.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        httpSecurity.oauth2Login(oauth2LoginCustomizer -> {
-            oauth2LoginCustomizer.userInfoEndpoint(userInfo -> userInfo.userService(oAuth2UserService()));
-        });
+        httpSecurity.exceptionHandling(exceptionHandling -> exceptionHandling.authenticationEntryPoint((request, response, authException) ->
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage())
+        ));
 
-        httpSecurity.exceptionHandling(exceptionHandling -> exceptionHandling.authenticationEntryPoint((request, response, authException) -> {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage());
-        }));
-
-        httpSecurity.authorizeHttpRequests((authorizeHttpRequests) -> {
+        httpSecurity.authorizeHttpRequests(authorizeHttpRequests -> {
             authorizeHttpRequests.requestMatchers("/").permitAll();
             authorizeHttpRequests.requestMatchers("/api/authorization/google").permitAll();
             authorizeHttpRequests.requestMatchers("/api/authorization/google/callback").permitAll();
@@ -37,10 +32,5 @@ public class SecurityConfig {
         });
 
         return httpSecurity.build();
-    }
-
-    @Bean
-    public DefaultOAuth2UserService oAuth2UserService() {
-        return new DefaultOAuth2UserService();
     }
 }
