@@ -15,6 +15,7 @@ spring:
     properties:
       hibernate:
         format_sql: false
+
   jackson:
     time-zone: UTC
 
@@ -31,6 +32,10 @@ spring:
             authorization-uri: https://accounts.google.com/o/oauth2/auth
             token-uri: https://oauth2.googleapis.com/token
             user-info-uri: https://openidconnect.googleapis.com/v1/userinfo
+
+  devtools:
+    livereload:
+      enabled: true
 
 oauth:
   google:
