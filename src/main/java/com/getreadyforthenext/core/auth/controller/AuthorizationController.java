@@ -1,4 +1,4 @@
-package com.getreadyforthenext.core;
+package com.getreadyforthenext.core.auth.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationResp
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.view.RedirectView;
@@ -20,9 +21,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Controller
-public class OAuth2Controller {
+@RequestMapping("/api")
+public class AuthorizationController {
 
-    private static final Logger log = LoggerFactory.getLogger(OAuth2Controller.class);
+    private static final Logger log = LoggerFactory.getLogger(AuthorizationController.class);
+
     @Value("${spring.security.oauth2.client.registration.google.client-id}")
     private String clientId;
 
@@ -38,27 +41,25 @@ public class OAuth2Controller {
     @Value("${spring.security.oauth2.client.provider.google.user-info-uri}")
     private String userInfoUri;
 
-    @Value("${oauth.default.state}")
-    private String defaultStateValue;
+    @Value("${oauth.google.endpoint}")
+    private String googleOAuthEndpoint;
 
-    @GetMapping("/custom-oauth2/authorization/google")
-    public RedirectView authorize(@RequestParam(value = "state", defaultValue = "defaultStateValue") String state) {
-        if (state.equals("defaultStateValue")) state = defaultStateValue;
 
-        String authorizationRequest = UriComponentsBuilder.fromUriString("https://accounts.google.com/o/oauth2/v2/auth")
+    @GetMapping("/authorization/google")
+    public RedirectView authorize(@RequestParam(value = "state", defaultValue = "${oauth.default.state}") String state) {
+        String authorizationRequest = UriComponentsBuilder.fromUriString(this.googleOAuthEndpoint)
                 .queryParam(OAuth2ParameterNames.RESPONSE_TYPE, OAuth2AuthorizationResponseType.CODE.getValue())
                 .queryParam(OAuth2ParameterNames.CLIENT_ID, clientId)
                 .queryParam(OAuth2ParameterNames.REDIRECT_URI, callbackUri)
                 .queryParam(OAuth2ParameterNames.SCOPE, "openid email profile")
                 .queryParam(OAuth2ParameterNames.STATE, state)
-                .queryParam("prompt", "consent")
                 .build()
                 .toUriString();
 
         return new RedirectView(authorizationRequest);
     }
 
-    @GetMapping("/oauth2/callback")
+    @GetMapping("/authorization/google/callback")
     public RedirectView handleAuthorizationCode(String code, @RequestParam("state") String state) {
         RestTemplate restTemplate = new RestTemplate();
 
