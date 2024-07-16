@@ -4,8 +4,8 @@ import com.getreadyforthenext.core.user.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -25,7 +25,6 @@ public class User {
     private Long id;
 
     @Email(message = "Email should be valid")
-    @NotBlank(message = "Email cannot be empty")
     @Column(nullable = false, unique = true)
     private String email;
 
@@ -38,13 +37,16 @@ public class User {
     private String name;
 
     @Enumerated(EnumType.STRING)
-    @NotNull(message = "Role cannot be null")
-    private Role role = Role.USER;
+    @ColumnDefault("'USER'")
+    private Role role;
 
     @CreatedDate
     @Column(updatable = false, nullable = false)
+    @ColumnDefault("CURRENT_TIMESTAMP")
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @LastModifiedDate
+    @Column(nullable = false)
+    @ColumnDefault("CURRENT_TIMESTAMP")
     private LocalDateTime updatedAt = LocalDateTime.now();
 }
