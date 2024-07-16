@@ -1,0 +1,59 @@
+spring:
+  config:
+    import: optional:file:.env[.properties]
+
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    driver-class-name: ${DATABASE_DRIVER}
+
+  h2:
+    console:
+      enabled: true
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+
+  jackson:
+    time-zone: UTC
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_OAUTH_CLIENT_ID}
+            client-secret: ${GOOGLE_OAUTH_CLIENT_SECRET}
+            redirect-uri: ${GOOGLE_OAUTH_CLIENT_CALLBACK_URI}
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://openidconnect.googleapis.com/v1/userinfo
+
+  devtools:
+    livereload:
+      enabled: true
+
+oauth:
+  google:
+    endpoint: https://accounts.google.com/o/oauth2/v2/auth
+  default:
+    state: ${GOOGLE_OAUTH_CLIENT_DEFAULT_STATE}
+
+server:
+  port: ${PORT}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - info
