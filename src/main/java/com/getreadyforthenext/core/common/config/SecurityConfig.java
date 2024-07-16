@@ -30,11 +30,10 @@ public class SecurityConfig {
 
         httpSecurity.authorizeHttpRequests((authorizeHttpRequests) -> {
             authorizeHttpRequests.requestMatchers("/").permitAll();
-            authorizeHttpRequests.requestMatchers("/custom-oauth2/authorization/google").permitAll();
-            authorizeHttpRequests.requestMatchers("/oauth2/callback").permitAll();
-            authorizeHttpRequests.requestMatchers("/oauth2/authorization/google").permitAll();
+            authorizeHttpRequests.requestMatchers("/api/authorization/google").permitAll();
+            authorizeHttpRequests.requestMatchers("/api/authorization/google/callback").permitAll();
             authorizeHttpRequests.requestMatchers("/actuator/**").hasRole(Role.ADMIN.toString());
-            authorizeHttpRequests.anyRequest().permitAll();
+            authorizeHttpRequests.anyRequest().authenticated();
         });
 
         return httpSecurity.build();
