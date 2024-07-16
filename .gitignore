@@ -41,3 +41,5 @@ out/
 env/*
 
 !*Tests.java
+
+generated
