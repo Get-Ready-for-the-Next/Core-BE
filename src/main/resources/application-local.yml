@@ -1,6 +1,6 @@
 spring:
   config:
-    import: optional:file:env/.env.machine[.properties]
+    import: optional:file:env/.env.local[.properties]
 
   datasource:
     url: ${DATABASE_URL}
@@ -33,6 +33,8 @@ spring:
             user-info-uri: https://openidconnect.googleapis.com/v1/userinfo
 
 oauth:
+  google:
+    endpoint: https://accounts.google.com/o/oauth2/v2/auth
   default:
     state: ${GOOGLE_OAUTH_CLIENT_DEFAULT_STATE}
 
