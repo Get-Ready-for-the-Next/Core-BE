@@ -1,5 +1,6 @@
 package com.getreadyforthenext.core.auth.controller;
 
+import com.getreadyforthenext.core.user.repositories.UserRepositorySupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +26,7 @@ import java.util.Map;
 public class AuthorizationController {
 
     private static final Logger log = LoggerFactory.getLogger(AuthorizationController.class);
+    private final UserRepositorySupport userRepositorySupport;
 
     @Value("${spring.security.oauth2.client.registration.google.client-id}")
     private String clientId;
@@ -43,6 +45,10 @@ public class AuthorizationController {
 
     @Value("${oauth.google.endpoint}")
     private String googleOAuthEndpoint;
+
+    public AuthorizationController(UserRepositorySupport userRepositorySupport) {
+        this.userRepositorySupport = userRepositorySupport;
+    }
 
 
     @GetMapping("/authorization/google")
@@ -79,7 +85,7 @@ public class AuthorizationController {
         ResponseEntity<Map> response = restTemplate.exchange(userInfoUri, HttpMethod.GET, entity, Map.class);
 
         Map<String, Object> userInfo = response.getBody();
-        log.info("User Info: " + userInfo);
+        userRepositorySupport.googleUserRegistration(userInfo);
 
         return new RedirectView(state);
     }
