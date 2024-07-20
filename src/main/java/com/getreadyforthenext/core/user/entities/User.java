@@ -38,6 +38,10 @@ public class User {
     @Column(nullable = false)
     private String name;
 
+    @NotBlank(message = "Name cannot be empty")
+    @Column(nullable = false)
+    private String authenticationProvider;
+
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'USER'")
     private Role role;
