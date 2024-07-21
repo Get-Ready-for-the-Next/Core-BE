@@ -1,5 +1,6 @@
 package com.getreadyforthenext.core.auth.controller;
 
+import com.getreadyforthenext.core.user.entities.User;
 import com.getreadyforthenext.core.user.repositories.UserRepositorySupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,7 +86,7 @@ public class AuthorizationController {
         ResponseEntity<Map> response = restTemplate.exchange(userInfoUri, HttpMethod.GET, entity, Map.class);
 
         Map<String, Object> userInfo = response.getBody();
-        userRepositorySupport.googleUserRegistration(userInfo);
+        User user = userRepositorySupport.googleUserRegistration(userInfo);
 
         return new RedirectView(state);
     }

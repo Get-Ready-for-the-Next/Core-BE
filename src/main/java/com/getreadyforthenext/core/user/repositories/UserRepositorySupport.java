@@ -4,31 +4,33 @@ import com.getreadyforthenext.core.common.utils.CommonUtil;
 import com.getreadyforthenext.core.user.entities.User;
 import com.getreadyforthenext.core.user.enums.AuthenticationProvider;
 import com.getreadyforthenext.core.user.enums.Role;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class UserRepositorySupport {
 
     private final CommonUtil commonUtil;
     private final UserRepository userRepository;
-    private final JPAQueryFactory jpaQueryFactory;
     private final PasswordEncoder passwordEncoder;
 
-    public UserRepositorySupport(CommonUtil commonUtil, UserRepository userRepository, PasswordEncoder passwordEncoder, JPAQueryFactory jpaQueryFactory) {
+    public UserRepositorySupport(CommonUtil commonUtil, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.commonUtil = commonUtil;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.jpaQueryFactory = jpaQueryFactory;
     }
 
-    public void googleUserRegistration(Map<String, Object> googleUserInfo) {
+    public User googleUserRegistration(Map<String, Object> googleUserInfo) {
         String email = (String) googleUserInfo.get("email");
 
-        if (userRepository.findByEmail(email).isPresent()) return;
+        Optional<User> existingUser = userRepository.findByEmail(email);
+
+        if (existingUser.isPresent()) {
+            return existingUser.get();
+        }
 
         User user = new User();
         user.setEmail(email);
@@ -38,6 +40,6 @@ public class UserRepositorySupport {
         user.setAuthenticationProvider(AuthenticationProvider.GOOGLE);
         user.setRole(Role.USER);
 
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 }
