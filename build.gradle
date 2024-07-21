@@ -47,11 +47,12 @@ dependencies {
     implementation 'org.flywaydb:flyway-database-postgresql'
 }
 
+def querydslDir = "src/main/generated"
+
 tasks.named('test') {
+    file(querydslDir).deleteDir()
     useJUnitPlatform()
 }
-
-def querydslDir = "src/main/generated"
 
 sourceSets {
     main.java.srcDirs += [querydslDir]
@@ -68,3 +69,4 @@ clean.doLast {
 bootJar {
     archiveFileName = 'app.jar'
 }
+
