@@ -7,7 +7,7 @@ import java.security.SecureRandom;
 @Component
 public class CommonUtil {
 
-    public String generatePassword(int length) {
+    public String generateRandomString(int length) {
         final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_+=<>?";
         final SecureRandom random = new SecureRandom();
         StringBuilder password = new StringBuilder(length);

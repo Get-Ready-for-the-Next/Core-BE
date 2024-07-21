@@ -33,7 +33,7 @@ public class UserRepositorySupport {
         User user = new User();
         user.setEmail(email);
         user.setName((String) googleUserInfo.get("name"));
-        String encodedPassword = passwordEncoder.encode(commonUtil.generatePassword(32));
+        String encodedPassword = passwordEncoder.encode(commonUtil.generateRandomString(32));
         user.setPassword(encodedPassword);
         user.setAuthenticationProvider(AuthenticationProvider.GOOGLE);
         user.setRole(Role.USER);
